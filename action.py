@@ -12,7 +12,7 @@ class playChess(object):
         global p
         if (p == None):
               p = subprocess.Popen(["/usr/games/gnuchess","-x"],stdin=subprocess.PIPE,stdout=subprocess.PIPE)
-        p.stdin.write(bytes(move + '\n', 'utf-8'))
+        p.stdin.write(bytes(move.lower() + '\n', 'utf-8'))
         p.stdin.flush()
 
         newmove = ""
