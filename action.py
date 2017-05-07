@@ -34,3 +34,9 @@ class playChess(object):
 
         logging.info("Chess: %s", response)
         self.say(response)
+
+    # =========================================
+    # Makers! Add your own voice commands here.
+    # =========================================
+
+    actor.add_keyword(_('chess'), playChess(say,_('chess')))
