@@ -1,3 +1,7 @@
+# =========================================
+# Makers! Implement your own actions here.
+# =========================================
+
 p = None
 class playChess(object):
 
@@ -6,19 +10,27 @@ class playChess(object):
         self.keyword = keyword
 
     def run(self, voice_command):
-        move = voice_command.replace(self.keyword, '', 1) 
-        self.say("ok, you played," + move)
+
+        move = voice_command.replace(self.keyword, '', 1)
 
         global p
         if (p == None):
-              p = subprocess.Popen(["/usr/games/gnuchess","-x"],stdin=subprocess.PIPE,stdout=subprocess.PIPE)
+           p = subprocess.Popen(["/usr/games/gnuchess","-q"],stdin=subprocess.PIPE,stdout=subprocess.PIPE)
+
         p.stdin.write(bytes(move.lower() + '\n', 'utf-8'))
         p.stdin.flush()
 
-        newmove = ""
-        while ("move" not in newmove):
-           newmove = p.stdout.readline().decode("utf-8")
+        response = ""
+        if all(x.isalpha() or x.isspace() for x in move):
+           # no numbers (d2d4) so its a command like new,undo,remove
+           response = p.stdout.readline().decode("utf-8")
+           response = "ok," + move
+        else:
+            self.say("ok, you played," + move)
 
-        self.say(newmove)
+            while ("move" not in response):
+              response = p.stdout.readline().decode("utf-8")
+              logging.info("Chess log: %s", response)
 
-actor.add_keyword(_('chess'), playChess(say,_('chess')))
+        logging.info("Chess: %s", response)
+        self.say(response)
